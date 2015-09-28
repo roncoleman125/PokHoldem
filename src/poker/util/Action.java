@@ -13,7 +13,7 @@ public enum Action {
     FOLD(0),
     CHECK(1),
     RAISE(2),
-    DONT_KNOW(-1);
+    NONE(-1);
     
     public final int value;
     private Action(int value) {

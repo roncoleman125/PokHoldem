@@ -107,12 +107,17 @@ public class Game {
     }
     
     public static void doRounds(ArrayList<AbstractPlayer> players) {   
+                    
+        int minBet = config.getMinBet();
+        
         while (true) {
             int active = 0;
             int raising = 0;
 
             for (AbstractPlayer player : players) {
                 // Check in with player to see what they want to do next
+                player.clearAction();
+                
                 Action action = player.getAction(0);
 
                 // Inform other players
@@ -128,17 +133,16 @@ public class Game {
                 // how many players remain.
                 if (action == Action.RAISE) {
                     raising++;
+                    player.bet(minBet);
+                    pot++;
                 }
             }
 
             // If only one player remains or no one raising, rounds are done!
             if (active == 1 || raising == 0)
                 return;
-
-            // At this point >1 players ramain and someone is RAISING
-            int minBet = config.getMinBet();
             
-            players.stream().filter((player) -> (player.alive())).forEach((player) -> {
+            players.stream().filter((player) -> (player.alive() && !player.raised())).forEach((player) -> {
                 Action action = player.getAction(minBet);
                 if (!(action == Action.FOLD)) {
                     player.bet(minBet);

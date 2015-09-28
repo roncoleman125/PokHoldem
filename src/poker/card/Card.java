@@ -22,8 +22,14 @@ public class Card {
         return rank;
     }
     
+    public String decode() {
+        if(rank >= 2 && rank <= 10)
+            return rank+"";
+        
+        return "Ace";
+    }
     @Override
     public String toString() {
-        return "rank = "+rank;
+        return decode();
     }
 }

@@ -27,7 +27,7 @@ abstract public class AbstractPlayer {
     protected final int id;
     protected int standingBet = 0;
 
-    protected Action lastAction = Action.DONT_KNOW;
+    protected Action lastAction = Action.NONE;
 
     protected AbstractPlayer() {
         this(0,0);
@@ -47,6 +47,10 @@ abstract public class AbstractPlayer {
         return lastAction != Action.FOLD;
     }
     
+    public Boolean raised() {
+        return lastAction == Action.RAISE;
+    }
+    
     protected Action fold() {
         lastAction = Action.FOLD;
         
@@ -64,13 +68,17 @@ abstract public class AbstractPlayer {
     }
     
     public void reset() {
-        lastAction = Action.DONT_KNOW;
+        lastAction = Action.NONE;
         
         bankroll = Bank.getCredit();
         
         numPlayers++;
         
         clear();
+    }
+    
+    public void clearAction() {
+        lastAction = Action.NONE;
     }
     
     public void clear() {
@@ -120,6 +128,10 @@ abstract public class AbstractPlayer {
             return check();
 
         return fold();
+    }
+    
+    public Action getLastAction() {
+        return lastAction;
     }
 
     public int bet(int minBet) {
