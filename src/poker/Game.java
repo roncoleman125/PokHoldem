@@ -40,13 +40,15 @@ public class Game {
     // Configurator
     private final static Config config = Config.getInstance();
     
+    // List of players never changes although the state of players might
+    private final static ArrayList<AbstractPlayer> players = config.getPlayers();
+
+    // Win frequencies
+    private final static HashMap<String, Integer> winFreqs = new HashMap<>();
+        
     // Launch point for game
     public static void main(String[] args) {
-        // This list of players never changes although the state of players might
-        final ArrayList<AbstractPlayer> players = config.getPlayers();
-        
-        // Win frequencies
-        HashMap<String,Integer> winFreqs = new HashMap<>( );
+        signon();
         
         // Instantiate the deck
         Deck deck = new Deck();
@@ -55,6 +57,8 @@ public class Game {
         int numGames = config.getNumGames();
         
         int blind = config.getMinBet();
+        
+        int gamesPlayed = numGames;
         
         for (int game = 0; game < numGames; game++) {
             // Reset the game
@@ -91,21 +95,62 @@ public class Game {
 
             // Identify the winner
             AbstractPlayer winner = selectWinner(players);
-            System.out.println("game over "+winner+" wins with "+winner.getHand()+" takes all pot = "+pot);
             
             // Update the winner's bankroll
             winner.won(pot);
-            
-            // Collect win frequency
+            System.out.println(">>>> GAME OVER: "+winner+" wins with "+winner.getHand()+" takes all pot = "+pot);
+
+            // Collect win frequency data
             int frequency = winFreqs.getOrDefault(winner.toString(), 0);
             winFreqs.put(winner.toString(), frequency + 1 );
+            
+            // If only one player solvent, no need to play more games
+            int solvent = checkSolvency();
+            if(solvent == 1) {
+                gamesPlayed = game;
+                break;
+            }
         }
 
-        // Report win frequency for all players
-        players.stream().forEach((player) -> {
-            System.out.println(player+" wins = "+winFreqs.get(player.toString())+" b/r = "+player.getBankroll());
-        });
+        System.out.println("One solve player remains. GOODBYE!");
+        signoff(gamesPlayed);
+    }
+    
+    /**
+     * Check number of solvent players.
+     * @return Solvent count
+     */
+    private static int checkSolvency() {
+        int count = 0;
+        
+        for(AbstractPlayer player: players) {
+            if(player.getBankroll()> 0)
+                count++;
+        }
+        
+        return count;
+    } 
+    
+    /**
+     * Display signon message
+     */
+    private static void signon() {
+        System.out.println("Welcome to Poughkeepsie Hold'em!");
+        System.out.println("--------------------------------");
+    }
+    
+    /**
+     * Display signoff message
+     */
+    private static void signoff(int ngames) {
+        System.out.println("Play statistics");
+        System.out.println("---------------");
+                // Report win frequency for all players
 
+        System.out.println("played "+ngames+"");
+        players.stream().forEach((player) -> {
+            System.out.println(player+" wins = "+winFreqs.getOrDefault(player+"",0)+" b/r = "+player.getBankroll());
+        });
     }
 
     /**
@@ -133,9 +178,11 @@ public class Game {
         return winner;
     }
     
-    public static void doRounds(ArrayList<AbstractPlayer> players) {   
+    public static void doRounds(ArrayList<AbstractPlayer> players) {  
+        int round = 0;
         while (true) {
-            System.out.println("><><><><");
+            round++;
+            System.out.println("#### ROUND "+round);
             int active = 0;
             int raising = 0;
             int playerIndex = 0;

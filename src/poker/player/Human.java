@@ -50,14 +50,29 @@ public class Human extends AbstractPlayer {
             System.out.printf("Hand (prob = %2.0f%%): %s \n",wp*100.0,hand.getCard());
 
             // If somebody is raising, player can only raise, fold, or quit.
-            if(bet > 0) {              
-                Action action = getCommand("Raise, Fold, or Quit","rfq");
+            Action action;               
+            
+            // If someone is raising...
+            if(bet > 0) {
+                // If player has no chips, player can only fold or quit
+                if(bankroll == 0)
+                    action = getCommand("fq");
                 
-                return action;
+                // Otherwise, player has chips and can raise, fold, or quit 
+                else
+                    action = getCommand("rfq");
             }
-
-            // Otherwise...player cna check, raise, fold, or quit.
-            Action action = getCommand("Check, Raise, Fold, or Quit","crfq");
+            // No one is raising but if player has no chips, as above,
+            // player can only check, fold, or quit
+            else if(bankroll == 0) {
+                action = getCommand("cfq");
+            }
+            else
+                // Otherwise...no one raising but player has some chips so...
+                // player can check, raise, fold, or quit.
+                action = getCommand("crfq");
+            
+            System.out.println("You "+action+"ED");
             
             return action;
         } catch (Exception e) {
@@ -74,7 +89,9 @@ public class Human extends AbstractPlayer {
      * @param allowed Allowed inputs
      * @return Action
      */
-    private Action getCommand(String msg, String allowed) {
+    private Action getCommand( String allowed) {
+        String msg = decode(allowed);
+        
         while(true) {
             try {
                 System.out.print(msg+"? ");
@@ -91,7 +108,10 @@ public class Human extends AbstractPlayer {
                             case 'c':
                                 return lastAction = Action.CHECK;
                             case 'r':
-                                return lastAction = Action.RAISE;
+                                if(bankroll > 0)
+                                    return lastAction = Action.RAISE;
+                                else
+                                    return lastAction = Action.FOLD;
                             case 'q':                                
                                 System.exit(0);
                         }
@@ -114,5 +134,37 @@ public class Human extends AbstractPlayer {
             return;
         
         System.out.println(player+" "+action+"ED");
+    }
+    
+    /**
+     * Decodes the allowed commands
+     * @param allowed Allowed command
+     * @return Decoded command
+     */
+    protected String decode(String allowed) {
+        StringBuilder sb = new StringBuilder();
+        for(int k=0; k < allowed.length(); k++) {
+            if(k != 0 && k != allowed.length()-1)
+                sb.append(", ");
+            
+            else if(k == allowed.length()-1)
+                sb.append(" or ");
+            switch(allowed.charAt(k)) {
+                case 'c':
+                    sb.append("Check");
+                    break;
+                case 'r':
+                    sb.append("Raise");
+                    break;
+                case 'f':
+                    sb.append("Fold");
+                    break;
+                case 'q':
+                    sb.append("Quit");
+                    break;                    
+            }
+        }
+        
+        return sb.toString();
     }
 }

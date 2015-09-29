@@ -30,9 +30,5 @@ To change the configuration parameter, modify the pokpoker.json file.
 1. Add a GUI.
 2. Add win probability matrix for player folding and revealing card.
 3. Extend the game for more than one card to make it even more interesting.
-4. Add more testing.
-
-
-
- , mainly the issue of win probabilities which
-Baker and Cowling discuss but do not provide any implementation insight. 
+4. Add money management as the bluffing aggressive player will drive others to the bankruptcy.
+4. Test more.

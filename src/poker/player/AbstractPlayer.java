@@ -192,16 +192,16 @@ abstract public class AbstractPlayer {
         double wp = hand.getWinProbability(numPlayers);
 
         // If we have no cushion to make a bet, we must fold
-        int cushion = bankroll - betAmt;
+        int cover = bankroll - betAmt;
         
-        if (cushion < 0)
+        if (cover < 0)
             return fold();
 
         // Do bet decision tree
         if (wp >= alpha) {
-            if (wp >= beta)
+            if (wp >= beta && cover > 0)
                 return raise();
-            else if(betAmt == 0)
+            else if(betAmt == 0 || cover == 0)
                 return check();
         }
 

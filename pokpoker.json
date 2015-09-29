@@ -1,6 +1,6 @@
 {
     "numGames": 20,
-    "bank": 100,
+    "bank": 4,
     "minBet": 1,
     "debug": true,
     "players": [

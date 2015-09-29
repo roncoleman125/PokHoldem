@@ -1,6 +1,3 @@
-
-import poker.player.AbstractPlayer;
-
 /*
  Copyright (c) 2015 Ron Coleman
  Permission is hereby granted, free of charge, to any person obtaining
@@ -19,7 +16,7 @@ import poker.player.AbstractPlayer;
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
+ */
 package poker.player;
 
 
