@@ -1,7 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ Copyright (c) 2015 Ron Coleman
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package poker.util;
 
@@ -18,7 +32,7 @@ import org.json.simple.parser.ParseException;
 import poker.player.AbstractPlayer;
 
 /**
- *
+ * This class implements the configurator which gets loaded at run time.
  * @author Ron.Coleman
  */
 public class Config {
@@ -27,10 +41,11 @@ public class Config {
     protected int numGames;
     protected int bank;
     protected int minBet;
+    protected Boolean debug = false;
     protected static Config config;
     
     public static Config getInstance() {
-        return getInstance("poker.json");
+        return getInstance("pokpoker.json");
     }
     
     public static Config getInstance(String path) {
@@ -47,6 +62,8 @@ public class Config {
             config.bank = ((Long) json.get("bank")).intValue();
             
             config.minBet = ((Long) json.get("minBet")).intValue();
+            
+            config.debug = (Boolean) json.get("debug");
             
             JSONArray playersArray = (JSONArray)json.get("players");
             
@@ -91,5 +108,9 @@ public class Config {
     
     public int getMinBet() {
         return minBet;
+    }
+    
+    public Boolean getDebug() {
+        return debug;
     }
 }

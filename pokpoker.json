@@ -1,0 +1,10 @@
+{
+    "numGames": 20,
+    "bank": 100,
+    "minBet": 1,
+    "debug": true,
+    "players": [
+        { "player": "poker.player.BluffingAggressive"},
+        { "player": "poker.player.Human"}
+    ]
+}

@@ -5,10 +5,8 @@
  */
 package poker.player;
 
-import poker.util.Bank;
-
 /**
- *
+ * This class implements a cautious passive bot player.
  * @author Ron.Coleman
  */
 public class CautiousPassive extends AbstractPlayer {

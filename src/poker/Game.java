@@ -1,7 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ Copyright (c) 2015 Ron Coleman
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package poker;
 
@@ -14,44 +28,56 @@ import poker.util.Action;
 import poker.util.Config;
 
 /**
- *
+ * This class is the main process driver of the game.
  * @author Ron.Coleman
  */
 public class Game {
-    public static int pot;
+    /**
+     * Por (or "jackpot")
+     */
+    protected static int pot;
         
+    // Configurator
     private final static Config config = Config.getInstance();
     
+    // Launch point for game
     public static void main(String[] args) {
-        ArrayList<AbstractPlayer> players = config.getPlayers();
+        // This list of players never changes although the state of players might
+        final ArrayList<AbstractPlayer> players = config.getPlayers();
         
+        // Win frequencies
         HashMap<String,Integer> winFreqs = new HashMap<>( );
         
+        // Instantiate the deck
         Deck deck = new Deck();
 
+        // Set up basic game configuration
         int numGames = config.getNumGames();
         
-        int minBet = config.getMinBet();
+        int blind = config.getMinBet();
         
         for (int game = 0; game < numGames; game++) {
             // Reset the game
             deck.shuffle();
-
+            
             pot = 0;
 
             int active = 0;
             
             for(AbstractPlayer player: players) {
+                player.reset();
+                
                 if(player.getBankroll() <= 0)
                     continue;
                 
-                player.bet(minBet);
+                player.bet(blind);
                 
                 Card card = deck.deal();
                 
                 player.hit(card);
                 
-                pot++;
+                // Add to the jackpot
+                pot += blind;
                 
                 active++;
             }
@@ -65,6 +91,7 @@ public class Game {
 
             // Identify the winner
             AbstractPlayer winner = selectWinner(players);
+            System.out.println("game over "+winner+" wins with "+winner.getHand()+" takes all pot = "+pot);
             
             // Update the winner's bankroll
             winner.won(pot);
@@ -92,10 +119,10 @@ public class Game {
         int maxRank = -1;
 
         for (AbstractPlayer player : players) {
-            if(!player.alive())
+            if(!player.isActive())
                 continue;
             
-            int rank = player.getCard().getRank();
+            int rank = player.getHand().getRank();
             
             if (rank > maxRank) {
                 winner = player;
@@ -107,22 +134,29 @@ public class Game {
     }
     
     public static void doRounds(ArrayList<AbstractPlayer> players) {   
-                    
-        int minBet = config.getMinBet();
-        
         while (true) {
+            System.out.println("><><><><");
             int active = 0;
             int raising = 0;
+            int playerIndex = 0;
+                                
+            int minBet = 0;
 
+            // PASS #1: Find out who wants to CHECK, RAISE, or FOLD 
             for (AbstractPlayer player : players) {
-                // Check in with player to see what they want to do next
+                // End the round if I'm last player and no one is left
+                // since there's no point in raising, checking, or whatever
+                if(playerIndex == players.size()-1 && active == 0)
+                    return;
+                
+                // Clear last action since this is a new round
                 player.clearAction();
                 
-                Action action = player.getAction(0);
+                Action action = player.getAction(minBet);
 
                 // Inform other players
                 players.stream().forEach((other) -> {
-                    other.acted(player.getId(), action);
+                    other.acted(player, action);
                 });
 
                 // If player did not fold, they're still in as RAISE or CHECK
@@ -133,23 +167,44 @@ public class Game {
                 // how many players remain.
                 if (action == Action.RAISE) {
                     raising++;
+                    
+                    minBet = Config.getInstance().getMinBet();
+                    
                     player.bet(minBet);
-                    pot++;
+                    
+                    pot += minBet;
                 }
+                
+                playerIndex++;
             }
 
             // If only one player remains or no one raising, rounds are done!
             if (active == 1 || raising == 0)
                 return;
             
-            players.stream().filter((player) -> (player.alive() && !player.raised())).forEach((player) -> {
-                Action action = player.getAction(minBet);
-                if (!(action == Action.FOLD)) {
-                    player.bet(minBet);
+            // PASS #2: Call in bets from those not already folded
+            active = 0;
+            
+            for (AbstractPlayer player : players) {
+                if (player.isActive()) {
+                    active++;
+                    
+                    if (!player.isRaised()) {
+                        Action action = player.getAction(minBet);
+                        
+                        if (action != Action.FOLD) {
+                            player.bet(minBet);
 
-                    pot++;
+                            pot += minBet;
+                        }
+                        else
+                            active--;
+                    }
                 }
-            });
+            }
+            
+            if(active == 1)
+                return;
         }
     }
     

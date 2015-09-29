@@ -1,7 +1,21 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ Copyright (c) 2015 Ron Coleman
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package poker.player;
 
@@ -10,19 +24,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import poker.Game;
 import poker.util.Action;
-import poker.util.Config;
 
 /**
- *
+ * This class implements a human player interface though the keyboard.
  * @author Ron.Coleman
  */
-public class Human extends AbstractPlayer {
-    // Interactive commands
-    // n = number of players
-    // p = pot size
-    // x = quit
-    protected final String INTERACTIVE_ACTIONS = "wcnpx";
-    
+public class Human extends AbstractPlayer {    
     protected BufferedReader br;
 
     public Human() {       
@@ -38,24 +45,35 @@ public class Human extends AbstractPlayer {
             // Show the command prompt
             double wp = hand.getWinProbability(numPlayers);
             
-            System.out.printf("players: %d pot: %d ",numPlayers,Game.getPotSize());
-            System.out.printf("hand: %s (prob %5.2f)\n",hand.getCard(),wp);
+            System.out.printf("Players: %d\npot: %d\n",numPlayers,Game.getPotSize());
+            System.out.println("Bankroll: "+bankroll);
+            System.out.printf("Hand (prob = %2.0f%%): %s \n",wp*100.0,hand.getCard());
 
+            // If somebody is raising, player can only raise, fold, or quit.
             if(bet > 0) {              
-                Action action = getCommand("raise, fold, or quit","rfq");
+                Action action = getCommand("Raise, Fold, or Quit","rfq");
                 
                 return action;
             }
 
-            Action action = getCommand("check, raise, fold, or quit","crfq");
+            // Otherwise...player cna check, raise, fold, or quit.
+            Action action = getCommand("Check, Raise, Fold, or Quit","crfq");
+            
             return action;
         } catch (Exception e) {
             System.err.println(e);
         }
 
+        // If we get here...something went wrong!
         return Action.NONE;
     }
     
+    /**
+     * Gets a command from the player
+     * @param msg Prompt message
+     * @param allowed Allowed inputs
+     * @return Action
+     */
     private Action getCommand(String msg, String allowed) {
         while(true) {
             try {
@@ -69,11 +87,11 @@ public class Human extends AbstractPlayer {
                     if(c == allowed.charAt(i)) {
                         switch(c) {
                             case 'f':
-                                return Action.FOLD;
+                                return lastAction = Action.FOLD;
                             case 'c':
-                                return Action.CHECK;
+                                return lastAction = Action.CHECK;
                             case 'r':
-                                return Action.RAISE;
+                                return lastAction = Action.RAISE;
                             case 'q':                                
                                 System.exit(0);
                         }
@@ -83,5 +101,18 @@ public class Human extends AbstractPlayer {
                 return Action.NONE;
             }
         }
+    }
+    
+    /**
+     * Report what other players are doing.
+     * @param player Player
+     * @param action Action
+     */
+    @Override
+    public void acted(AbstractPlayer player, Action action) {
+        if(player == this)
+            return;
+        
+        System.out.println(player+" "+action+"ED");
     }
 }

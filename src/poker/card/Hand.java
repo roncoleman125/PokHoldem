@@ -1,14 +1,33 @@
+/*
+ Copyright (c) 2015 Ron Coleman
+ Permission is hereby granted, free of charge, to any person obtaining
+ a copy of this software and associated documentation files (the
+ "Software"), to deal in the Software without restriction, including
+ without limitation the rights to use, copy, modify, merge, publish,
+ distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package poker.card;
 
 import java.util.ArrayList;
 
 /**
- *
+ * This class represents a hand.
  * @author Ron.Coleman
  */
 public class Hand {
-    // Set to true for "exact" win probability using combinatorial method
-    public final static Boolean USE_COMBINATORIAL = false;
+//    // Set to true for "exact" win probability using combinatorial method
+//    public final static Boolean USE_COMBINATORIAL = false;
     
     // Win probability matrix
     protected static double[][] wpMatrix = {
@@ -33,6 +52,15 @@ public class Hand {
     }
     
     /**
+     * Gets the rank of the hand which is just the rank of the one card
+     * in the hand.
+     * @return Rank as an integer
+     */
+    public int getRank() {
+        return getCard().getRank();
+    }
+    
+    /**
      * Hits hand with a card
      * @param card Card
      */
@@ -50,7 +78,7 @@ public class Hand {
     /**
      * Gets the win probability given the number of hands in the game
      * @param numHands Number of hands 2-5.
-     * @return 
+     * @return Probability
      */
     public double getWinProbability(int numHands) {
         assert(numHands >=2 && numHands <=5);
@@ -59,8 +87,8 @@ public class Hand {
         int rank = cards.get(0).getRank();
         assert(rank >=2 && rank <= 11);
         
-        if(USE_COMBINATORIAL)
-            return combinatorial(rank);
+//        if(USE_COMBINATORIAL)
+//            return combinatorial(rank);
 
         // numHands-2 as there must be a min of two hands
         // rank-2 as ranks range from 2 - 11
