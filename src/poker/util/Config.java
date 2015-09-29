@@ -32,22 +32,54 @@ import org.json.simple.parser.ParseException;
 import poker.player.AbstractPlayer;
 
 /**
- * This class implements the configurator which gets loaded at run time.
+ * This class implements the configurator singleton which gets loaded at run time.
  * @author Ron.Coleman
  */
 public class Config {
+    /** Path of the config file */
+    public final static String CONFIG_PATH = "pokpoker.json";
+    
+    /** JSON parser to read and process the config file */
     protected static JSONParser parser = new JSONParser();
+    
+    /** Number of players specified by the config file */
     protected ArrayList<AbstractPlayer> players = new ArrayList<>();
+    
+    /** Number of game in the config file */
     protected int numGames;
+    
+    /** Bank in chips in the config file */
     protected int bank;
+    
+    /** Minimum bet in the config file */
     protected int minBet;
+    
+    /** Debugging state in the config file */
     protected Boolean debug = false;
+    
+    /** This one and only configuration */
     protected static Config config;
     
-    public static Config getInstance() {
-        return getInstance("pokpoker.json");
+    /**
+     * Constructor can only be constructed through singleton.
+     */
+    private Config() {
+        
     }
     
+    /**
+     * Gets an instance of a configuration singleton from default file.
+     * @return Configuration
+     */
+    public static Config getInstance() {
+        return getInstance(CONFIG_PATH);
+    }
+    
+    /**
+     * Gets a configuration single t
+     * @param path
+     * @return Configuration
+     */
     public static Config getInstance(String path) {
         if(config != null)
             return config;
@@ -77,6 +109,8 @@ public class Config {
                 config.players.add(player);
             }
             
+            // Set bankroll in 2nd pass as we need to firist need to know
+            // how many players there are before assigning credit.
             config.getPlayers().stream().forEach((player) -> {
                 player.setBankroll(Bank.getCredit());
             });
@@ -90,27 +124,51 @@ public class Config {
         return null;
     }
     
+    /**
+     * Gets players.
+     * @return List of players
+     */
     public ArrayList<AbstractPlayer> getPlayers() {
         return players;
     }
     
+    /**
+     * Gets number of players.
+     * @return Integer
+     */
     public int getNumPlayers() {
         return players.size();
     }
     
+    /**
+     * Gets number of games.
+     * @return Integer
+     */
     public int getNumGames() {
         return numGames;
     }
     
+    /**
+     * Gets the bank total chips.
+     * @return Integer
+     */
     public int getBank() {
         return bank;
     }
     
+    /**
+     * Gets the minimum bet in chips.
+     * @return Integer
+     */
     public int getMinBet() {
         return minBet;
     }
     
-    public Boolean getDebug() {
+    /**
+     * Answers whether game is in debug mode.
+     * @return Boolean
+     */
+    public Boolean isDebugging() {
         return debug;
     }
 }

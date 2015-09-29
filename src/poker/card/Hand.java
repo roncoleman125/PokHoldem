@@ -38,7 +38,9 @@ public class Hand {
         /* 5 players */ {0.000,  0.000,  0.000,  0.000,  0.008,  0.040,  0.119,  0.278,  0.556,  1.000}
     };
     
-    // Cards in my hand
+    /**
+     * Cards in this hand
+     */
     protected ArrayList<Card> cards = new ArrayList<>();
     
     /**
@@ -98,7 +100,7 @@ public class Hand {
     }
 
     /**
-     * Calculate win probability assuming four players.
+     * Calculate win probability assuming four players. NOT USED
      * @param rank Card rank
      * @return win probability
      */
