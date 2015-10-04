@@ -60,7 +60,7 @@ public class Game {
         
         int gamesPlayed = numGames;
         
-        for (int game = 0; game < numGames; game++) {
+        for (int game = 1; game <= numGames; game++) {
             // Reset the game
             deck.shuffle();
             
@@ -91,6 +91,7 @@ public class Game {
                 break;
             
             // Do betting rounds
+            System.out.println(">>>> GAME "+game+" STARTING");
             doRounds(players);
 
             // Identify the winner
@@ -98,7 +99,12 @@ public class Game {
             
             // Update the winner's bankroll
             winner.won(pot);
-            System.out.println(">>>> GAME OVER: "+winner+" wins with "+winner.getHand()+" takes all pot = "+pot);
+            
+            // Display results
+            System.out.println(">>>> GAME "+game+" OVER: "+winner+" WINS with "+winner.getHand()+" takes all pot = "+pot);
+            players.stream().filter((player) -> (player != winner)).forEach((player) -> {
+                System.out.println(player+" LOST with "+player.getHand());
+            });
 
             // Collect win frequency data
             int frequency = winFreqs.getOrDefault(winner.toString(), 0);
@@ -112,7 +118,7 @@ public class Game {
             }
         }
 
-        System.out.println("One solve player remains. GOODBYE!");
+        System.out.println("1 solvent player remains. GOODBYE!");
         signoff(gamesPlayed);
     }
     
@@ -147,9 +153,9 @@ public class Game {
         System.out.println("---------------");
                 // Report win frequency for all players
 
-        System.out.println("played "+ngames+"");
+        System.out.println("Played "+ngames+" game(s).");
         players.stream().forEach((player) -> {
-            System.out.println(player+" wins = "+winFreqs.getOrDefault(player+"",0)+" b/r = "+player.getBankroll());
+            System.out.println(player+" win(s): "+winFreqs.getOrDefault(player+"",0)+" bankroll: "+player.getBankroll());
         });
     }
 
@@ -182,7 +188,7 @@ public class Game {
         int round = 0;
         while (true) {
             round++;
-            System.out.println("#### ROUND "+round);
+            System.out.println("++++ ROUND "+round);
             int active = 0;
             int raising = 0;
             int playerIndex = 0;

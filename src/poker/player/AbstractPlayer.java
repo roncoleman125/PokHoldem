@@ -31,7 +31,7 @@ import poker.util.Config;
 abstract public class AbstractPlayer {
     public static final Boolean DEBUG = true;
     
-    protected static int idNext = 0;
+    protected static int idNext = 1;
     protected static int numPlayers = 0;
     
     protected Hand hand = new Hand();

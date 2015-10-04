@@ -72,7 +72,7 @@ public class Human extends AbstractPlayer {
                 // player can check, raise, fold, or quit.
                 action = getCommand("crfq");
             
-            System.out.println("You "+action+"ED");
+            System.out.println("You "+getGrammatical(action)+".");
             
             return action;
         } catch (Exception e) {
@@ -133,7 +133,12 @@ public class Human extends AbstractPlayer {
         if(player == this)
             return;
         
-        System.out.println(player+" "+action+"ED");
+        System.out.print(player+" "+getGrammatical(action));
+        
+        if(action == Action.FOLD)
+            System.out.println(" with "+player.getHand()+".");
+        else
+            System.out.println(".");
     }
     
     /**
@@ -166,5 +171,14 @@ public class Human extends AbstractPlayer {
         }
         
         return sb.toString();
+    }
+    
+    /**
+     * Translation action to past tense form.
+     * @param action Action
+     * @return String
+     */
+    protected String getGrammatical(Action action) {
+        return action+(action.toString().endsWith("E") ? "D" : "ED");
     }
 }
