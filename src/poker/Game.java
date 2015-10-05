@@ -193,7 +193,7 @@ public class Game {
             int raising = 0;
             int playerNum = 0;
                                 
-            int minBet = 0;
+            int raise = 0;
 
             // PASS #1: Find out who wants to CHECK, RAISE, or FOLD 
             for (AbstractPlayer player : players) {          
@@ -207,12 +207,10 @@ public class Game {
                 // Clear last action since this is a new round
                 player.clearAction();
                 
-                Action action = player.getAction(minBet);
+                Action action = player.getAction(raise);
 
                 // Inform other players
-                players.stream().forEach((other) -> {
-                    other.acted(player, action);
-                });
+                informAll(player, action);
                 
                 // If player not in it to win it, skip them
                 if(!player.isActive())
@@ -227,11 +225,11 @@ public class Game {
                 if (action == Action.RAISE) {
                     raising++;
                     
-                    minBet = Config.getInstance().getMinBet();
+                    raise = Config.getInstance().getMinBet();
                     
-                    player.bet(minBet);
+                    player.bet(raise);
                     
-                    pot += minBet;
+                    pot += raise;
                 }
             }
 
@@ -246,13 +244,14 @@ public class Game {
                 if (player.isActive()) {
                     active++;
                     
-                    if (!player.isRaised()) {
-                        Action action = player.getAction(minBet);
+                    if (!player.didRaise()) {
+                        Action action = player.getAction(raise);
+                        informAll(player, action);
                         
                         if (action != Action.FOLD) {
-                            player.bet(minBet);
+                            player.bet(raise);
 
-                            pot += minBet;
+                            pot += raise;
                         }
                         else
                             active--;
@@ -263,6 +262,17 @@ public class Game {
             if(active == 1)
                 return;
         }
+    }
+    
+    /**
+     * Inform all player of this action by player
+     * @param action Action
+     * @param player Taken by this player
+     */
+    protected static void informAll(AbstractPlayer player, Action action) {
+        players.stream().forEach((other) -> {
+            other.acted(player, action);
+        });   
     }
     
     /**

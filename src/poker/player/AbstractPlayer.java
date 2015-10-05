@@ -76,7 +76,7 @@ abstract public class AbstractPlayer {
      * Answers whether player has raised the bet.
      * @return Boolean
      */
-    public Boolean isRaised() {
+    public Boolean didRaise() {
         return lastAction == Action.RAISE;
     }
     
@@ -272,10 +272,13 @@ abstract public class AbstractPlayer {
         for(int k=0; k < name.length(); k++) {
             char c = name.charAt(k);
             
-            if(Character.isUpperCase(name.charAt(k)) && k != 0)
-                sb.append(" ");
+
+            if(Character.isUpperCase(name.charAt(k)))
+                sb.append(c);
+//            if(Character.isUpperCase(name.charAt(k)) && k != 0)
+//                sb.append(" ");
             
-            sb.append(Character.toUpperCase(c));    
+//            sb.append(Character.toUpperCase(c));    
         }
         
         return sb.toString();

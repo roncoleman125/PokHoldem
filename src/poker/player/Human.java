@@ -176,4 +176,13 @@ public class Human extends AbstractPlayer {
         
         return sb.toString();
     }
+    
+    /**
+     * Gets string representation of this class.
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
 }
