@@ -151,11 +151,14 @@ public class Game {
     private static void signoff(int ngames) {
         System.out.println("Play statistics");
         System.out.println("---------------");
-                // Report win frequency for all players
-
         System.out.println("Played "+ngames+" game(s).");
+        
+        // Report win frequency for all players
+        System.out.printf("%3s %6s %3s %3s\n","#","player","wins","b/r");
+
         players.stream().forEach((player) -> {
-            System.out.println(player+" win(s): "+winFreqs.getOrDefault(player+"",0)+" bankroll: "+player.getBankroll());
+            System.out.printf("%3d %-6s %3d %3d\n",player.getId(),player.decorated(),winFreqs.getOrDefault(player+"",0),player.getBankroll());
+//            System.out.println(player+" win(s): "+winFreqs.getOrDefault(player+"",0)+" bankroll: "+player.getBankroll());
         });
     }
 
@@ -184,6 +187,10 @@ public class Game {
         return winner;
     }
     
+    /**
+     * Do betting rounds
+     * @param players Players in game
+     */
     public static void doRounds(ArrayList<AbstractPlayer> players) {  
         int round = 0;
         while (true) {

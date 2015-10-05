@@ -185,4 +185,13 @@ public class Human extends AbstractPlayer {
     public String toString() {
         return this.getClass().getSimpleName();
     }
+    
+    /**
+     * Gets decorated name
+     * @return String
+     */
+    @Override
+    public String decorated() {
+        return this + "";
+    }
 }

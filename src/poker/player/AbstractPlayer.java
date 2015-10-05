@@ -262,6 +262,14 @@ abstract public class AbstractPlayer {
     }
     
     /**
+     * Gets decorated name.
+     * @return String
+     */
+    public String decorated() {
+        return decorate(getClass().getSimpleName());
+    }
+    
+    /**
      * Decorates a class name.
      * @param name Name
      * @return Decorated name
