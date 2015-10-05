@@ -69,7 +69,7 @@ abstract public class AbstractPlayer {
      * @return Boolean 
      */
     public Boolean isActive() {
-        return lastAction != Action.FOLD;
+        return lastAction != Action.FOLD && lastAction != Action.NONE;
     }
     
     /**
@@ -184,15 +184,15 @@ abstract public class AbstractPlayer {
 
     /**
      * Implements the bet decision tree.
-     * @param betAmt Represents inbound raise
-     * @return 
+     * @param raise Inbound raise
+     * @return Action
      */
-    public Action getAction(int betAmt) {
+    public Action getAction(int raise) {
         // Get the win probability
         double wp = hand.getWinProbability(numPlayers);
 
         // If we have no cushion to make a bet, we must fold
-        int cover = bankroll - betAmt;
+        int cover = bankroll - raise;
         
         if (cover < 0)
             return fold();
@@ -201,11 +201,11 @@ abstract public class AbstractPlayer {
         if (wp >= alpha) {
             if (wp >= beta && cover > 0)
                 return raise();
-            else if(betAmt == 0 || cover == 0)
+            else if(raise == 0 || cover == 0)
                 return check();
         }
 
-        else if (wp < alpha && betAmt == 0)
+        else if (wp < alpha && raise == 0)
             return check();
 
         // We'll arrive here if we can't raise or check

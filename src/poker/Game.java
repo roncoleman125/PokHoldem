@@ -22,7 +22,7 @@ package poker;
 import java.util.ArrayList;
 import java.util.HashMap;
 import poker.card.Card;
-import poker.card.Deck;
+import poker.card.IDeck;
 import poker.player.AbstractPlayer;
 import poker.util.Action;
 import poker.util.Config;
@@ -51,7 +51,7 @@ public class Game {
         signon();
         
         // Instantiate the deck
-        Deck deck = new Deck();
+        IDeck deck = config.getDeck();
 
         // Set up basic game configuration
         int numGames = config.getNumGames();
@@ -191,15 +191,17 @@ public class Game {
             System.out.println("++++ ROUND "+round);
             int active = 0;
             int raising = 0;
-            int playerIndex = 0;
+            int playerNum = 0;
                                 
             int minBet = 0;
 
             // PASS #1: Find out who wants to CHECK, RAISE, or FOLD 
-            for (AbstractPlayer player : players) {
+            for (AbstractPlayer player : players) {          
+                playerNum++;
+                
                 // End the round if I'm last player and no one is left
-                // since there's no point in raising, checking, or whatever
-                if(playerIndex == players.size()-1 && active == 0)
+                // there's no point in raising, checking, or whatever
+                if(playerNum == players.size() && active == 0)
                     return;
                 
                 // Clear last action since this is a new round
@@ -211,6 +213,10 @@ public class Game {
                 players.stream().forEach((other) -> {
                     other.acted(player, action);
                 });
+                
+                // If player not in it to win it, skip them
+                if(!player.isActive())
+                    continue;
 
                 // If player did not fold, they're still in as RAISE or CHECK
                 if (action != Action.FOLD)
@@ -227,8 +233,6 @@ public class Game {
                     
                     pot += minBet;
                 }
-                
-                playerIndex++;
             }
 
             // If only one player remains or no one raising, rounds are done!

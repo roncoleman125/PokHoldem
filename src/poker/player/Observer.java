@@ -17,50 +17,40 @@
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package poker.card;
+package poker.player;
+
+import poker.util.Action;
+import poker.util.Helper;
 
 /**
- *
+ * This player is not a "real" player but instead an observer.
  * @author Ron.Coleman
  */
-public class Card {
-    public final static int ACE = 11;
+public class Observer extends AbstractPlayer {
+    public Observer() {        
+        numPlayers--;
+    }
     
-    protected int rank = -1;
-    
-    /**
-     * Constructor
-     * @param rank Card rank
-     */
-    public Card(int rank) {
-        this.rank = rank;
+    @Override
+    public Action getAction(int raise) {
+        return Action.NONE;
     }
     
     /**
-     * Gets the rank of a card.
-     * @return Integer
-     */
-    public int getRank() {
-        return rank;
-    }
-    
-    /**
-     * Decodes a card to stringify it.
-     * @return 
-     */
-    public String decode() {
-        if(rank >= 2 && rank <= 10)
-            return rank+"";
-        
-        return "Ace";
-    }
-    
-    /**
-     * Returns representation as a string.
-     * @return String
+     * Report what other players are doing.
+     * @param player Player
+     * @param action Action
      */
     @Override
-    public String toString() {
-        return decode();
-    }
+    public void acted(AbstractPlayer player, Action action) {
+        if(player == this)
+            return;
+        
+        System.out.print(player+" "+Helper.getGrammatical(action));
+        
+        if(action == Action.FOLD)
+            System.out.println(" with "+player.getHand()+".");
+        else
+            System.out.println(".");
+    } 
 }

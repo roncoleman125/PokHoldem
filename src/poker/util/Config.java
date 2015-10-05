@@ -29,6 +29,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import poker.card.IDeck;
 import poker.player.AbstractPlayer;
 
 /**
@@ -53,6 +54,9 @@ public class Config {
     
     /** Minimum bet in the config file */
     protected int minBet;
+    
+    /** Deck interface */
+    protected IDeck deck;
     
     /** Debugging state in the config file */
     protected Boolean debug = false;
@@ -87,6 +91,7 @@ public class Config {
         config = new Config();
         
         try {
+            // Load the parameters from the config file
             JSONObject json = (JSONObject) parser.parse(new FileReader(path));
             
             config.numGames = ((Long) json.get("numGames")).intValue();
@@ -97,8 +102,13 @@ public class Config {
             
             config.debug = (Boolean) json.get("debug");
             
+            String deckClassName = (String) json.get("deck");
+            
+            config.deck = (IDeck) Class.forName(deckClassName).newInstance();
+            
             JSONArray playersArray = (JSONArray)json.get("players");
             
+            // Get the players
             Iterator<JSONObject> iter = playersArray.iterator();
             
             while(iter.hasNext()) {
@@ -109,8 +119,8 @@ public class Config {
                 config.players.add(player);
             }
             
-            // Set bankroll in 2nd pass as we need to firist need to know
-            // how many players there are before assigning credit.
+            // Set bankroll in 2nd pass as we need to firist know
+            // how many players there are to evenly divide the bank.
             config.getPlayers().stream().forEach((player) -> {
                 player.setBankroll(Bank.getCredit());
             });
@@ -162,6 +172,14 @@ public class Config {
      */
     public int getMinBet() {
         return minBet;
+    }
+    
+    /**
+     * Gets the deck.
+     * @return IDeck
+     */
+    public IDeck getDeck() {
+        return deck;
     }
     
     /**

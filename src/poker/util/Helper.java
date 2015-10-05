@@ -17,50 +17,19 @@
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package poker.card;
+package poker.util;
 
 /**
- *
+ * Helper class with various convenience methods.
  * @author Ron.Coleman
  */
-public class Card {
-    public final static int ACE = 11;
-    
-    protected int rank = -1;
-    
+public class Helper {
     /**
-     * Constructor
-     * @param rank Card rank
-     */
-    public Card(int rank) {
-        this.rank = rank;
-    }
-    
-    /**
-     * Gets the rank of a card.
-     * @return Integer
-     */
-    public int getRank() {
-        return rank;
-    }
-    
-    /**
-     * Decodes a card to stringify it.
-     * @return 
-     */
-    public String decode() {
-        if(rank >= 2 && rank <= 10)
-            return rank+"";
-        
-        return "Ace";
-    }
-    
-    /**
-     * Returns representation as a string.
+     * Translates action to past tense form.
+     * @param action Action
      * @return String
      */
-    @Override
-    public String toString() {
-        return decode();
-    }
+    public static String getGrammatical(Action action) {
+        return action+(action.toString().endsWith("E") ? "D" : "ED");
+    }   
 }

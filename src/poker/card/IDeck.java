@@ -20,47 +20,18 @@
 package poker.card;
 
 /**
- *
+ * Interface decks implement.
  * @author Ron.Coleman
  */
-public class Card {
-    public final static int ACE = 11;
-    
-    protected int rank = -1;
+public interface IDeck {
+    /**
+     * Shuffles the deck.
+     */
+    public void shuffle();
     
     /**
-     * Constructor
-     * @param rank Card rank
+     * Deals a card.
+     * @return Card
      */
-    public Card(int rank) {
-        this.rank = rank;
-    }
-    
-    /**
-     * Gets the rank of a card.
-     * @return Integer
-     */
-    public int getRank() {
-        return rank;
-    }
-    
-    /**
-     * Decodes a card to stringify it.
-     * @return 
-     */
-    public String decode() {
-        if(rank >= 2 && rank <= 10)
-            return rank+"";
-        
-        return "Ace";
-    }
-    
-    /**
-     * Returns representation as a string.
-     * @return String
-     */
-    @Override
-    public String toString() {
-        return decode();
-    }
+    public Card deal();
 }

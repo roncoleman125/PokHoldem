@@ -1,10 +1,11 @@
 {
     "numGames": 20,
-    "bank": 4,
+    "bank": 20,
     "minBet": 1,
     "debug": true,
+    "deck": "poker.card.Deck",
     "players": [
-        { "player": "poker.player.BluffingAggressive"},
+        { "player": "poker.player.BluffingPassive"},
         { "player": "poker.player.Human"}
     ]
 }

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import poker.Game;
 import poker.util.Action;
+import poker.util.Helper;
 
 /**
  * This class implements a human player interface though the keyboard.
@@ -32,6 +33,9 @@ import poker.util.Action;
 public class Human extends AbstractPlayer {    
     protected BufferedReader br;
 
+    /**
+     * Constructor
+     */
     public Human() {       
         br = new BufferedReader(new InputStreamReader(System.in));
     }
@@ -72,7 +76,7 @@ public class Human extends AbstractPlayer {
                 // player can check, raise, fold, or quit.
                 action = getCommand("crfq");
             
-            System.out.println("You "+getGrammatical(action)+".");
+            System.out.println("You "+Helper.getGrammatical(action)+".");
             
             return action;
         } catch (Exception e) {
@@ -133,7 +137,7 @@ public class Human extends AbstractPlayer {
         if(player == this)
             return;
         
-        System.out.print(player+" "+getGrammatical(action));
+        System.out.print(player+" "+Helper.getGrammatical(action));
         
         if(action == Action.FOLD)
             System.out.println(" with "+player.getHand()+".");
@@ -171,14 +175,5 @@ public class Human extends AbstractPlayer {
         }
         
         return sb.toString();
-    }
-    
-    /**
-     * Translation action to past tense form.
-     * @param action Action
-     * @return String
-     */
-    protected String getGrammatical(Action action) {
-        return action+(action.toString().endsWith("E") ? "D" : "ED");
     }
 }

@@ -27,7 +27,7 @@ import java.util.Random;
  * This class implements the deck.
  * @author Ron.Coleman
  */
-public class Deck {
+public class Deck implements IDeck {
     protected ArrayList<Card> cards = new ArrayList<>();
     protected int nextIndex = 0;
     
