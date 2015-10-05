@@ -85,11 +85,12 @@ public class Bayes extends AbstractPlayer {
         if(player.getId() == this.id)
             return;
         
-        // Calculate the unnormalized style probability
-        double ba = playProbs[BA][action.value] * priorProbs[BA][id];
-        double bp = playProbs[BP][action.value] * priorProbs[BP][id];
-        double ca = playProbs[CA][action.value] * priorProbs[CA][id];
-        double cp = playProbs[CP][action.value] * priorProbs[CP][id];
+        // Calculate the unnormalized style probability for opponent i
+        int k = player.getId();
+        double ba = playProbs[BA][action.value] * priorProbs[BA][k];
+        double bp = playProbs[BP][action.value] * priorProbs[BP][k];
+        double ca = playProbs[CA][action.value] * priorProbs[CA][k];
+        double cp = playProbs[CP][action.value] * priorProbs[CP][k];
         
         // Calculate the normalizaing constant
         double prob = ba + bp + ca + cp;
@@ -102,10 +103,10 @@ public class Bayes extends AbstractPlayer {
         }
         
         // Update the prior -- is not the posterior probability
-        priorProbs[BA][id] = ba;
-        priorProbs[BP][id] = bp;
-        priorProbs[CA][id] = ca;
-        priorProbs[CP][id] = cp;
+        priorProbs[BA][k] = ba;
+        priorProbs[BP][k] = bp;
+        priorProbs[CA][k] = ca;
+        priorProbs[CP][k] = cp;
     }   
     
     /**
@@ -127,7 +128,8 @@ public class Bayes extends AbstractPlayer {
             
             int maxStyle = -1;
             
-            for(int style=0; style < 3; style++) {
+            int[] styles = { BA, BP, CA, CP };
+            for(int style: styles) {
                 if(priorProbs[style][playerId] > maxActionProb) {
                     maxActionProb = priorProbs[style][playerId];
                     maxStyle = style;

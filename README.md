@@ -27,8 +27,8 @@ configured by default with two players, one of them the human command line inter
 To change the configuration parameter, modify the pokpoker.json file.
 
 ##Some TODOs
-1. Add a GUI.
+1. Add GUI.
 2. Add win probability matrix for player folding and revealing card.
-3. Extend the game for more than one card to make it even more interesting.
+3. Extend game for more than one card to make it even more complex.
 4. Add money management as the bluffing aggressive player will drive others to the bankruptcy.
-4. Test more.
+5. Play test more.
