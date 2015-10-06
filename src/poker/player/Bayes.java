@@ -27,14 +27,37 @@ import poker.util.Action;
  * @author Ron.Coleman
  */
 public class Bayes extends AbstractPlayer {
-    
     // Some convenientce constants
+    
+    // Bluffing aggressive
     private final static int BA = 0;
+    
+    // Bluffing passive
     private final static int BP = 1;
+    
+    // Cautious agressive
     private final static int CA = 2;
+    
+    // Cautious passive
     private final static int CP = 3;
+    
+    // Anti-style alphas, see Backer and Cowling (2007)
+    private final static double[] antiAlphas = {
+        /* BA */ 0.6,
+        /* BP */ 0.8,
+        /* CA */ 0.0,
+        /* CP */ 0.7
+    };
+    
+    // Anti-style betas, see Backer and Cowling (2007)
+    private final static double[] antiBetas = {
+        /* BA */ 0.6,
+        /* BP */ 0.8,
+        /* CA */ 0.0,
+        /* CP */ 0.7
+    };
 
-    // Prior probabilities
+    // Prior probabilities, see Backer and Cowling (2007)
     private final static double[][] priorProbs = {
         // player =  0     1     2     3     4
         /* BA */    {0.25, 0.25, 0.25, 0.25, 0.25},
@@ -43,7 +66,7 @@ public class Bayes extends AbstractPlayer {
         /* CP */    {0.25, 0.25, 0.25, 0.25, 0.25}
     };
     
-    // Play style probabilies
+    // Play style probabilies from historical observatioms, see Backer and Cowling (2007)
     private final static double[][] playProbs =
         {   //        FOLD    CHECK   BET
             /* BA */ {0.36,   0.05,   0.59},
@@ -51,22 +74,6 @@ public class Bayes extends AbstractPlayer {
             /* CA */ {0.73,   0.02,   0.25},
             /* CP */ {0.87,   0.07,   0.06}
         };
-    
-    // Anti-style alphas
-    private final static double[] antiAlphas = {
-        /* BA */ 0.6,
-        /* BP */ 0.8,
-        /* CA */ 0.0,
-        /* CP */ 0.7
-    };
-    
-    /// Anti-style betas
-    private final static double[] antiBetas = {
-        /* BA */ 0.6,
-        /* BP */ 0.8,
-        /* CA */ 0.0,
-        /* CP */ 0.7
-    };
     
     /**
      * Constructor
@@ -76,7 +83,7 @@ public class Bayes extends AbstractPlayer {
     }
     
     /**
-     * Tracks each player's moves.
+     * Tracks each player's actions.
      * @param player Player
      * @param action Move
      */
@@ -86,13 +93,14 @@ public class Bayes extends AbstractPlayer {
             return;
         
         // Calculate the unnormalized style probability for opponent i
+        // P(action | style)
         int k = player.getId();
         double ba = playProbs[BA][action.value] * priorProbs[BA][k];
         double bp = playProbs[BP][action.value] * priorProbs[BP][k];
         double ca = playProbs[CA][action.value] * priorProbs[CA][k];
         double cp = playProbs[CP][action.value] * priorProbs[CP][k];
         
-        // Calculate the normalizaing constant
+        // Calculate the normalizaing constant, P(action)
         double prob = ba + bp + ca + cp;
         
         if(prob < 1) {
@@ -102,7 +110,7 @@ public class Bayes extends AbstractPlayer {
             cp = cp / prob;
         }
         
-        // Update the prior -- is not the posterior probability
+        // Update the prior -- is not the posterior probability, P(style | action)
         priorProbs[BA][k] = ba;
         priorProbs[BP][k] = bp;
         priorProbs[CA][k] = ca;
@@ -142,13 +150,13 @@ public class Bayes extends AbstractPlayer {
         
         // Select the style (ie, alpha / beta) so we can make an anti-play
 
-        // The cautious-passive player is the most dangerous so if there's
+        // The cautious-passive player is the most important to counter so if there's
         // at least one, we'll use the corresponding anti-player style.
         if(demographics[CP] >= 1) {
             alpha = antiAlphas[CP];
             beta = antiBetas[CP];
         }
-        // The cautious-aggressive player is the next most dangerous so if there's
+        // The cautious-aggressive player is the next most important to counter so if there's
         // at least one, we'll use the corresponding anti-player style.
         else if(demographics[CA] >= 1) {
             alpha = antiAlphas[CA];

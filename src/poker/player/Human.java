@@ -183,7 +183,7 @@ public class Human extends AbstractPlayer {
      */
     @Override
     public String toString() {
-        return this.getClass().getSimpleName();
+        return this.getClass().getSimpleName().toUpperCase()+" (player #"+id+")";
     }
     
     /**
@@ -192,6 +192,6 @@ public class Human extends AbstractPlayer {
      */
     @Override
     public String decorated() {
-        return this + "";
+        return this.getClass().getSimpleName().toUpperCase();
     }
 }

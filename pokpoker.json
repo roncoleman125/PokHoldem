@@ -1,6 +1,6 @@
 {
     "numGames": 20,
-    "bank": 4,
+    "bank": 20,
     "minBet": 1,
     "debug": true,
     "deck": "poker.card.Deck",

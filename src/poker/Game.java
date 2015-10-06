@@ -101,7 +101,7 @@ public class Game {
             winner.won(pot);
             
             // Display results
-            System.out.println(">>>> GAME "+game+" OVER: "+winner+" WINS with "+winner.getHand()+" takes all pot = "+pot);
+            System.out.println(">>>> GAME "+game+" OVER: "+winner+" wins with "+winner.getHand()+" takes all pot = "+pot);
             players.stream().filter((player) -> (player != winner)).forEach((player) -> {
                 System.out.println(player+" LOST with "+player.getHand());
             });
