@@ -58,9 +58,9 @@ public class Human extends AbstractPlayer {
             
             // If someone is raising...
             if(bet > 0) {
-                // If player has no chips, player can only fold or quit
+                // If player has no chips, player can only check or quit
                 if(bankroll == 0)
-                    action = getCommand("fq");
+                    action = getCommand("cq");
                 
                 // Otherwise, player has chips and can raise, fold, or quit 
                 else

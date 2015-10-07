@@ -219,6 +219,11 @@ public class Game {
                 // Inform other players
                 informAll(player, action);
                 
+                // If player has no more chips, end the rounds
+                // NOTE: this may need to be moved to first statement of this inner loop
+                if(player.getBankroll() == 0)
+                    return;
+                
                 // If player not in it to win it, skip them
                 if(!player.isActive())
                     continue;
