@@ -101,6 +101,8 @@ public class Human extends AbstractPlayer {
                 System.out.print(msg+"? ");
                 
                 String input = br.readLine().trim().toLowerCase();
+                if(input.length() == 0)
+                    continue;
                 
                 char c = input.charAt(0);
                 
